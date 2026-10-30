@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android TV 홈 화면 배너 (320x180) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp" android:height="180dp" android:viewportWidth="320" android:viewportHeight="180">
+    <path android:fillColor="#FF1C2129" android:pathData="M0,0h320v180h-320z" />
+    <group android:translateX="106" android:translateY="36">
+        <path android:fillColor="#FF4F8EF7" android:pathData="M30,32h30a6,6 0,0 1,6 6v18a6,6 0,0 1,-6 6h-18l-8,8v-8h-4a6,6 0,0 1,-6 -6v-18a6,6 0,0 1,6 -6z" />
+        <path android:fillColor="#FFF2F4F7" android:pathData="M54,48h24a6,6 0,0 1,6 6v14a6,6 0,0 1,-6 6h-2v7l-7,-7h-15a6,6 0,0 1,-6 -6v-14a6,6 0,0 1,6 -6z" />
+        <path android:fillColor="#FF101318" android:pathData="M60,57h18v3h-18zM60,63h12v3h-12z" />
+        <path android:fillColor="#FFF2F4F7" android:pathData="M33,41h20v3h-20zM33,47h14v3h-14z" />
+    </group>
+</vector>

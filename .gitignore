@@ -1,0 +1,10 @@
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+*.orig
+
+# 학습 산출물 (Colab Drive 의 work 디렉터리)
+training/work/
+
+# 학습된 모델은 Colab 에서 만들어 넣는다 (약 29MB)
+android/app/src/main/assets/*.tflite

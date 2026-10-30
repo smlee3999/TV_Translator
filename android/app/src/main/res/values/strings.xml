@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TV 번역기</string>
+    <string name="title">한↔영 번역기</string>
+    <string name="input_label">입력</string>
+    <string name="input_hint">번역할 문장을 입력하세요 (Enter: 번역)</string>
+    <string name="output_label">번역 결과 · %1$s</string>
+    <string name="direction_auto">자동 감지 (한⇄영)</string>
+    <string name="direction_ko_en">한국어 → English</string>
+    <string name="direction_en_ko">English → 한국어</string>
+    <string name="lang_auto">자동</string>
+    <string name="lang_ko">한국어</string>
+    <string name="lang_en">English</string>
+    <string name="keyboard_hangul">키보드: 한</string>
+    <string name="keyboard_english">키보드: A</string>
+    <string name="translate">번역</string>
+    <string name="clear">지우기</string>
+    <string name="use_result">결과를 입력으로</string>
+    <string name="keyboard_help">물리 키보드: 한/영 키 · 오른쪽 Alt · Shift+Space 로 한/영 전환</string>
+    <string name="status_loading">모델 불러오는 중…</string>
+    <string name="status_ready">준비됨</string>
+    <string name="status_translating">번역 중…</string>
+    <string name="status_done">완료 (%1$.2f초)</string>
+    <string name="status_error">오류: %1$s</string>
+    <string name="status_model_missing">모델을 불러오지 못했습니다. training/export_tflite.py 로 만든 translator.tflite, tokenizer.vocab, model_config.json 을 app/src/main/assets 에 넣고 다시 빌드하세요.\n(%1$s)</string>
+</resources>
