@@ -16,7 +16,7 @@
     <string name="translate">번역</string>
     <string name="clear">지우기</string>
     <string name="use_result">결과를 입력으로</string>
-    <string name="keyboard_help">물리 키보드: 한/영 키 · 오른쪽 Alt · Shift+Space 로 한/영 전환</string>
+    <string name="keyboard_help">한/영 전환: 한/영 키 · 오른쪽 Alt · Shift+Space</string>
     <string name="status_loading">모델 불러오는 중…</string>
     <string name="status_ready">준비됨</string>
     <string name="status_translating">번역 중…</string>
