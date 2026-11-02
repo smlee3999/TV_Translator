@@ -30,7 +30,8 @@ import tensorflow as tf
 
 import config
 from spm_tokenizer import UnigramTokenizer
-from train import build_model, encode_source, greedy_ids, load_tsv, max_output_len
+from train import (build_model, encode_source, greedy_ids, load_tsv, make_checkpoint, max_output_len,
+                   restore_checkpoint)
 from transformer import create_look_ahead_mask
 
 warnings.filterwarnings("ignore", message=".*does not support masking.*")
@@ -117,10 +118,10 @@ def main(work_dir, out_dir=None, android_dir=None, quantize=True, verify_n=50):
     sp = spm.SentencePieceProcessor(model_file=os.path.join(work_dir, "spm.model"))
 
     model = build_model(sp.get_piece_size())
-    ckpt = tf.train.Checkpoint(model=model)
+    ckpt = make_checkpoint(model)
     latest = tf.train.latest_checkpoint(os.path.join(work_dir, "ckpt"))
     assert latest, "checkpoint 가 없습니다. train.py 를 먼저 실행하세요."
-    ckpt.restore(latest).expect_partial()
+    restore_checkpoint(ckpt, model, latest).expect_partial()
     print(f"restored {latest}")
 
     sm_dir = os.path.join(work_dir, "saved_model")
