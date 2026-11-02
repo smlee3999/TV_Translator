@@ -8,3 +8,6 @@ training/work/
 
 # 학습된 모델은 Colab 에서 만들어 넣는다 (약 29MB)
 android/app/src/main/assets/*.tflite
+
+# Colab 에서 내려받은 변환 결과 묶음
+android_assets.zip

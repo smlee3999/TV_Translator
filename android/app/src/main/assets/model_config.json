@@ -1,0 +1,11 @@
+{
+  "pad_id": 0,
+  "unk_id": 1,
+  "bos_id": 2,
+  "eos_id": 3,
+  "to_en_id": 4,
+  "to_ko_id": 5,
+  "max_tokens": 64,
+  "embedding_dim": 256,
+  "vocab_size": 16000
+}
