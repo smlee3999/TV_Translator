@@ -205,6 +205,11 @@ def greedy_translate(model, sp, text, to_lang):
     return sp.decode(greedy_ids(model, src))
 
 
+def format_duration(seconds):
+    minutes = int(seconds) // 60
+    return f"{minutes // 60}시간 {minutes % 60:02d}분"
+
+
 def main(work_dir, train_steps=config.TRAIN_STEPS, eval_every=config.EVAL_EVERY,
          save_every=config.SAVE_EVERY, tokens_per_batch=config.TOKENS_PER_BATCH,
          max_pairs=None, mixed_precision=None, xla=None):
@@ -232,8 +237,10 @@ def main(work_dir, train_steps=config.TRAIN_STEPS, eval_every=config.EVAL_EVERY,
     # fp16 은 gradient underflow 를 막기 위해 loss scaling 이 필요하다
     optimizer = keras.optimizers.LossScaleOptimizer(adam) if mixed_precision else adam
     step_var = tf.Variable(0, dtype=tf.int64, trainable=False)
+    # 세션이 끊겨도 이어서 합산하도록 누적 학습 시간도 checkpoint 에 저장한다 (평가·저장 시간 포함)
+    seconds_var = tf.Variable(0.0, dtype=tf.float64, trainable=False)
     # Adam 자체를 저장해야 mixed_precision 설정과 관계없이 checkpoint 를 이어 쓸 수 있다
-    ckpt = make_checkpoint(model, optimizer=adam, step=step_var)
+    ckpt = make_checkpoint(model, optimizer=adam, step=step_var, seconds=seconds_var)
     manager = tf.train.CheckpointManager(ckpt, os.path.join(work_dir, "ckpt"), max_to_keep=3)
     if manager.latest_checkpoint:
         restore_checkpoint(ckpt, model, manager.latest_checkpoint)
@@ -262,6 +269,20 @@ def main(work_dir, train_steps=config.TRAIN_STEPS, eval_every=config.EVAL_EVERY,
     loss_m, acc_m = tf.keras.metrics.Mean(), tf.keras.metrics.Mean()
     t0 = time.time()
     step = int(step_var.numpy())  # 매 step 마다 GPU 값을 읽으면 동기화로 느려지므로 Python 에서 센다
+    base_seconds, session_start = float(seconds_var.numpy()), time.time()
+
+    def total_seconds():
+        return base_seconds + time.time() - session_start
+
+    def log_time(tag):
+        """학습 시간을 출력하고 work_dir/train_time.log 에 남긴다."""
+        line = (f"{time.strftime('%Y-%m-%d %H:%M:%S')}  {tag}  step {step}  "
+                f"누적 {format_duration(total_seconds())}  이번 세션 {format_duration(time.time() - session_start)}  "
+                f"tokens_per_batch {tokens_per_batch}")
+        print(f"학습 시간: {line}", flush=True)
+        with open(os.path.join(work_dir, "train_time.log"), "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+
     for src, tgt in train_ds:
         if step >= train_steps:
             break
@@ -276,6 +297,7 @@ def main(work_dir, train_steps=config.TRAIN_STEPS, eval_every=config.EVAL_EVERY,
             acc_m.reset_state()
             t0 = time.time()
         if step % save_every == 0 or step == train_steps:
+            seconds_var.assign(total_seconds())
             manager.save(checkpoint_number=step)
         if step % eval_every == 0 or step == train_steps:
             vl, va = tf.keras.metrics.Mean(), tf.keras.metrics.Mean()
@@ -286,8 +308,11 @@ def main(work_dir, train_steps=config.TRAIN_STEPS, eval_every=config.EVAL_EVERY,
             print(f"== step {step}  valid loss {vl.result():.4f}  valid acc {va.result():.4f}")
             for src_lang, tgt_lang, text in samples:
                 print(f"   [{src_lang}→{tgt_lang}] {text}\n            → {greedy_translate(model, sp, text, tgt_lang)}")
+            log_time("평가")
             t0 = time.time()
+    seconds_var.assign(total_seconds())
     manager.save(checkpoint_number=int(step_var.numpy()))
+    log_time("종료")
     return model, sp
 
 

@@ -51,6 +51,24 @@ android/                   Android TV 앱 (Kotlin, LiteRT)
 
 로컬 검증은 CPU 에서 200 step 만 학습한 모델로 했기 때문에 번역 품질은 확인하지 않았다. 실제 품질은 Colab 학습 후 확인해야 한다.
 
+## 데이터를 추가해 재학습하기
+
+아직 진행하지 않았다. 현재 모델은 OPUS-100 만으로 80,000 step 학습했고(약 4시간, valid loss 3.13, valid acc 0.41),
+train loss 가 평탄해져서 품질을 높이려면 step 을 늘리기보다 데이터를 추가해야 한다.
+
+| 후보 | 규모 | 내용 | 확인할 점 |
+|---|---|---|---|
+| [AI Hub 한국어-영어 번역 말뭉치](https://aihub.or.kr/aidata/87) (권장) | 160만 쌍 (뉴스 80만 쌍 포함) | 뉴스·공공 어휘 보강에 가장 적합 | 직접 신청. 신청 자격과 이용 범위는 약관 확인 필요 |
+| [lemon-mint/korean_english_parallel_wiki_augmented_v1](https://huggingface.co/datasets/lemon-mint/korean_english_parallel_wiki_augmented_v1) | 약 50만 쌍 | 위키백과 기반 | CC-BY-SA 3.0 으로 표기. 품질은 샘플 확인 필요 |
+
+Hugging Face 에 올라온 AI Hub 데이터의 개인 사본은 라이선스 문제가 있을 수 있어 쓰지 않는다.
+
+1. 코퍼스를 `en<TAB>ko` TSV 로 만들어 Drive 에 올린다.
+2. 기존 결과를 덮어쓰지 않도록 노트북의 `WORK_DIR` 을 새 경로로 바꾼다. vocab 이 새로 만들어지므로 기존 checkpoint 는 이어 쓸 수 없다.
+3. 노트북의 `data_prep.main(WORK_DIR, extra_tsv=[...])` 에 TSV 경로를 넣는다.
+4. 데이터 양에 맞춰 `train_steps` 를 늘려 학습한다. GPU 기준 80,000 step 에 약 3.8시간이 걸리며, 학습 시간은 `WORK_DIR/train_time.log` 에 기록된다.
+5. 변환한 assets 를 앱에 복사한다. valid 데이터는 자막 위주라 뉴스 번역 개선은 valid loss 로 알 수 없으므로, 고정 시험 문장으로 기존 모델과 비교한다.
+
 ## 참고 / 한계
 
 - OPUS-100 은 영화 자막 중심이라 구어체에 강하고, 뉴스·기술 문서에는 약하다. 품질을 높이려면 AI Hub 한영 코퍼스를 추가하는 것이 가장 효과적이다.
