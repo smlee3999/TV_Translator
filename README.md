@@ -65,7 +65,7 @@ flowchart LR
 
 ## Android 앱
 
-![실기기에서 긴 한국어 문장을 영어로 번역한 앱 화면. 결과 일부는 결과창 아래로 잘렸고 오역이 포함되어 있다.](docs/images/app_screen.png)
+![실기기에서 "How are you today?" 를 "오늘은 어때?" 로 번역한 앱 화면](docs/images/app_screen.png)
 
 - 리모컨: D-pad 로 이동하고, 입력창에서 가운데 버튼을 누르면 화상 키보드가 열린다. '완료'를 누르면 번역한다.
 - 블루투스/USB 키보드: Enter 로 번역한다. **앱 내장 두벌식 한글 조합기**를 쓰며, 한/영 키 · 오른쪽 Alt · Shift+Space 또는 화면의 `키보드: 한/A` 버튼으로 전환한다.
